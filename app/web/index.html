@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Imagens com Máscara</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <canvas id="canvas" width="512" height="512"></canvas>
+        <div class="controls">
+            <button onclick="anterior()">Anterior</button>
+            <button onclick="proxima()">Próxima</button>
+            <button onclick="prever()">Prever</button>
+            <div id="loader">Carregando...</div>
+            <div class="legend">
+                <div><span class="green"></span>Milho (Verde)</div>
+                <div><span class="red"></span>Daninha (Vermelho)</div>
+                <div><span class="transparent"></span>Fundo (Transparente)</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
