@@ -3,7 +3,20 @@
     padding: 0;
     box-sizing: border-box;
 }
+.tela {
+    position: relative;
+    width: 600px;
+    height: 600px;
+}
+#semantic {
+    opacity: 0.2; /* 50% de transparência */
+}
 
+.tela canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f9f9f9;

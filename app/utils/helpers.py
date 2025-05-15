@@ -1,23 +1,48 @@
-from flask import Response,send_file, abort
+from flask import Response,send_file, abort,Flask, request, jsonify
 import json
 import os
 import cv2
 from app.galore import predictor
-
 import io
+import numpy as np
+import base64
+from io import BytesIO
 
-pd = predictor()
+dataset = ...
+
 
 def getMasc(n):
-    paths = os.listdir('app/data')
-    image_path = os.path.join('app/data', paths[n])
-    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    mask = pd.predict(image)
-    # Converter a máscara (supondo que seja uma matriz de 0, 1 e 2)
-    _, buffer = cv2.imencode('.png', mask)  # Converte a máscara para o formato PNG
-    io_buf = io.BytesIO(buffer)  # Cria um buffer para enviar os dados da imagem
+    _ , mask , _ = dataset.__getitem__(n)  # Saída esperada: 2D (valores 0, 1, 2)
+    # Cria imagem RGBA
+    rgba = np.zeros((mask.shape[0], mask.shape[1], 4), dtype=np.uint8)
 
-    return send_file(io_buf, mimetype='image/png')  
+    # Fundo (transparente)
+    rgba[mask == 0] = [0, 0, 0, 255]
+
+    # Milho (verde semi-transparente)
+    rgba[mask == 1] = [0, 255, 0, 0]
+
+    # Daninha (vermelho semi-transparente)
+    rgba[mask == 2] = [255, 0, 0, 0]
+
+    # Codifica como PNG com canal alpha
+    _, buffer = cv2.imencode('.png', rgba)
+    io_buf = io.BytesIO(buffer)
+
+    return send_file(io_buf, mimetype='image/png')
+
+
+# def getMasc(n):
+#     paths = os.listdir('app/data')
+#     image_path = os.path.join('app/data', paths[n])
+#     image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+#     mask = pd.predict(image)
+#     # Converter a máscara (supondo que seja uma matriz de 0, 1 e 2)
+#     # aqui vc tem a imagen e a mascara faz a sobreposicao deixando a mascara meui transparente pra imagen ficar de fundo
+#     _, buffer = cv2.imencode('.png', mask)  # Converte a máscara para o formato PNG
+#     io_buf = io.BytesIO(buffer)  # Cria um buffer para enviar os dados da imagem
+
+#     return send_file(io_buf, mimetype='image/png')  
 
 
 def getHtml(filepath):
@@ -32,9 +57,9 @@ def getDataSetLen():
     return len([img for img in os.listdir('app/data') if img.endswith('png')])
 
 def getImage(n):
+    
     try:
-        imagesPaths = [img for img in os.listdir('app/data') if img.endswith('png')]
-        path = os.path.join('data', imagesPaths[n])
+        path = os.path.join('data', f'{n}_image.png')
         return send_file(path, mimetype='image/png')
     except IndexError:
         return f"Imagem {n} não existe", 404

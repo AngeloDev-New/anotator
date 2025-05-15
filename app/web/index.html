@@ -8,11 +8,17 @@
 </head>
 <body>
     <div class="container">
-        <canvas id="canvas" width="512" height="512"></canvas>
+        <!-- <canvas id="canvas" width="512" height="512"></canvas> -->
+        <figure class="tela" >
+            <canvas id="imagen" width="600" height="600"></canvas>
+            <canvas id="semantic" width="600" height="600"></canvas>
+        </figure>
         <div class="controls">
             <button onclick="anterior()">Anterior</button>
             <button onclick="proxima()">Próxima</button>
             <button onclick="prever()">Prever</button>
+            <button onclick="addData()">Adicionar ao Dataset</button>
+
             <div id="loader">Carregando...</div>
             <div class="legend">
                 <div><span class="green"></span>Milho (Verde)</div>

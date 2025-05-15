@@ -7,6 +7,8 @@ import torch.nn as nn
 import cv2
 import numpy as np
 
+dataset = ...
+
 def getModel(path, num_classes=3, in_channels=3):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     net = deeplabv3plus_resnet50(num_classes=num_classes)
@@ -19,13 +21,8 @@ class predictor:
     def __init__(self):
         self.prevision = getModel(pth_path)
 
-    def predict(self, image):
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = torch.from_numpy(image).float() / 255.0  # Normaliza se necessário
-        image = image.permute(2, 0, 1).unsqueeze(0)       # [1, 3, H, W]
-
-        with torch.no_grad():
-            output = self.prevision(image)               # Esperado: [1, 3, H, W]
+    def predict(self, image,idx):
+        output = dataset.__getitem__(idx)             # Esperado: [1, 3, H, W]
 
         if output.dim() == 4:
             prediction = torch.argmax(output, dim=1)     # [1, H, W]
